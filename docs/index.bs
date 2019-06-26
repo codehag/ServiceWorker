@@ -2881,12 +2881,9 @@ spec: webappsec-referrer-policy; urlPrefix: https://w3c.github.io/webappsec-refe
               1. If |evaluationStatus|.\[[Value]] is empty, this means the script was not evaluated. Set |startFailed| to true and abort these steps.
           1. Otherwise, if |script| is a [=module script=], then:
               1. Let |evaluationPromise| be the result of <a lt="run a module script">running the module script</a> |script|, with report errors set to false.
-              1. If |evaluationPromise|.\[[PromiseState]] is "fulfilled":
-                  1. Set |evaluationStatus| to [$NormalCompletion$](|evaluationPromise|.\[[PromiseResult]]).
-              1. Otherwise, if |evaluationPromise|.\[[PromiseState]] is "rejected":
+              1. If |evaluationPromise|.\[[PromiseState]] is "rejected":
                   1. Set |startFailed| to true and abort these steps.
               1. Otherwise:
-                  1. Assert: |evaluationPromise|.\[[PromiseState]] is "pending".
                   1. Set |evaluationStatus| to [$NormalCompletion$](undefined).
                   1. [=Upon rejection=] of |evaluationPromise| with |reason|:
                       1. [=Report the exception=] given by |reason| for |script|.
