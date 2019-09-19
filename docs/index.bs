@@ -2566,7 +2566,7 @@ spec: webappsec-referrer-policy; urlPrefix: https://w3c.github.io/webappsec-refe
           : "<code>classic</code>"
           :: <a>Fetch a classic worker script</a> given |job|’s <a lt="URL serializer">serialized</a> [=job/script url=], |job|’s [=job/client=], "<code>serviceworker</code>", and the to-be-created <a>environment settings object</a> for this service worker.
           : "<code>module</code>"
-          :: <a>Fetch a module worker script graph</a> given |job|’s <a lt="URL serializer">serialized</a> [=job/script url=], |job|’s [=job/client=], "<code>serviceworker</code>", "<code>omit</code>", and the to-be-created <a>environment settings object</a> for this service worker.
+          :: <a>Fetch a module worker script graph</a> given |job|’s <a lt="URL serializer">serialized</a> [=job/script url=], |job|’s [=job/client=], "<code>serviceworker</code>", "<code>omit</code>", the to-be-created <a>environment settings object</a> for this service worker, and false.
 
           Issue: Using the to-be-created [=environment settings object=] rather than a concrete [=environment settings object=]. This is used due to the unique processing model of service workers compared to the processing model of other [=web workers=]. The script fetching algorithms of HTML standard originally designed for other [=web workers=] require an [=environment settings object=] of the execution environment, but service workers fetch a script separately in the [=Update=] algorithm before the script later runs multiple times through the [=Run Service Worker=] algorithm.
 
@@ -2881,14 +2881,13 @@ spec: webappsec-referrer-policy; urlPrefix: https://w3c.github.io/webappsec-refe
               1. If |evaluationStatus|.\[[Value]] is empty, this means the script was not evaluated. Set |startFailed| to true and abort these steps.
           1. Otherwise, if |script| is a [=module script=], then:
               1. Let |evaluationPromise| be the result of <a lt="run a module script">running the module script</a> |script|, with report errors set to false.
+              1. Assert: |evaluationPromise|.\[[PromiseState]] is not "pending".
               1. If |evaluationPromise|.\[[PromiseState]] is "rejected":
                   1. Set |startFailed| to true and abort these steps.
 
                       Note: This is intended to maintain compatibilty with failing synchronous modules before the introduction of asynchronous modules.
               1. Otherwise:
                   1. Set |evaluationStatus| to [$NormalCompletion$](undefined).
-                  1. [=Upon rejection=] of |evaluationPromise| with |reason|:
-                      1. [=Report the exception=] given by |reason| for |script|.
           1. If the script was aborted by the [=Terminate Service Worker=] algorithm, set |startFailed| to true and abort these steps.
           1. Set |serviceWorker|'s [=start status=] to |evaluationStatus|.
           1. If |script|'s <a>has ever been evaluated flag</a> is unset, then:
